@@ -1,0 +1,2 @@
+- go run *.go
+- go build . && ./goserver
