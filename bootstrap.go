@@ -5,12 +5,15 @@ import (
 	"os"
 )
 
-var log = logrus.New()
+var Log = logrus.New()
+var Config = LoadConfig()
 
 func main() {
-	log.Out = os.Stdout
-	go FileServ()
+	Log.Out = os.Stdout
+
 	go HttpServ()
-	log.Info("server start.")
+	//go FileServ()
+
+	Log.Info("server start.")
 	select {}
 }

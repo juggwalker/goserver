@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -24,22 +25,22 @@ func sendEmailHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			log.Println("Read failed:", err)
+			Log.Println("Read failed:", err)
 		}
 		defer r.Body.Close()
 
 		body_str := string(body)
-		log.Println("body_str:", body_str)
+		Log.Println("body_str:", body_str)
 
 		var post EmailPostFormat
 
 		if err := json.Unmarshal(body, &post); err == nil {
-			//log.Println(post)
+			//Log.Println(post)
 			go (&Email{To: post.To, Subject: post.Subject, Body: post.Body}).Send()
 			ret, _ := json.Marshal(ret)
 			io.WriteString(w, string(ret))
 		} else {
-			log.Warn("json format error:", err)
+			Log.Warn("json format error:", err)
 		}
 
 	} else {
@@ -47,7 +48,7 @@ func sendEmailHandler(w http.ResponseWriter, r *http.Request) {
 		ret["code"] = 500
 		ret, _ := json.Marshal(ret)
 		io.WriteString(w, string(ret))
-		log.Warn("ONly support Post")
+		Log.Warn("ONly support Post")
 	}
 
 }
@@ -57,8 +58,9 @@ func HttpServ() {
 	mux.HandleFunc("/", echoHandler)
 	mux.HandleFunc("/sendmail", sendEmailHandler)
 
-	if err := http.ListenAndServe(":12345", mux); err != nil {
-		log.Fatal("http boot fail")
+	port := fmt.Sprintf(":%d", Config["server_http_port"])
+	if err := http.ListenAndServe(port, mux); err != nil {
+		Log.Fatal("http boot fail")
 	}
 
 }

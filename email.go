@@ -12,7 +12,7 @@ type Email struct {
 }
 
 func (this *Email) Send() {
-	log.Out = os.Stdout
+	Log.Out = os.Stdout
 	m := gomail.NewMessage()
 
 	m.SetAddressHeader("From", "2823335096@qq.com", "service") // 发件人
@@ -27,9 +27,9 @@ func (this *Email) Send() {
 	m.SetBody("text/html", this.Body)
 	d := gomail.NewPlainDialer("smtp.qq.com", 465, "2823335096@qq.com", "sdxpdvktvvltdgch") // 发送邮件服务器、端口、发件人账号、发件人密码(QQ邮箱需要填授权码)
 	if err := d.DialAndSend(m); err != nil {
-		log.Warn("发送失败")
+		Log.Warn("发送失败")
 		return
 	}
 
-	log.Info("send email success")
+	Log.Info("send email success")
 }
