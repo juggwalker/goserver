@@ -2,35 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
-type User struct {
-	Name string `json:"name1"`
-	Age  int    `json:"age1"`
-}
-
 type EmailPostFormat struct {
-	Form string `json:"from"`
-	To   string `json:"to"`
-}
-
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	fmt.Println("Form: ", r.Form)
-	fmt.Println("Path: ", r.URL.Path)
-	fmt.Println(r.Form["a"])
-	fmt.Println(r.Form["b"])
-	fmt.Println(r.Method)
-	for k, v := range r.Form {
-		fmt.Println(k, "=>", v, strings.Join(v, "-"))
-	}
-
-	io.WriteString(w, "Hello, GoServer!\n")
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Body    string `json:"body"`
 }
 
 func echoHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,8 +18,9 @@ func echoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendEmailHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "It works !")
-
+	ret := make(map[string]interface{})
+	ret["msg"] = "send ok"
+	ret["errmsg"] = 0
 	if r.Method == "POST" {
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -48,33 +29,31 @@ func sendEmailHandler(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
 		body_str := string(body)
-		fmt.Println("body_str:", body_str)
+		log.Println("body_str:", body_str)
 
-		var user User
+		var post EmailPostFormat
 
-		if err := json.Unmarshal(body, &user); err == nil {
-			fmt.Println(user)
-			user.Age += 100
-			fmt.Println(user)
-			ret, _ := json.Marshal(user)
-			fmt.Fprint(w, string(ret))
+		if err := json.Unmarshal(body, &post); err == nil {
+			//log.Println(post)
+			go (&Email{To: post.To, Subject: post.Subject, Body: post.Body}).Send()
+			ret, _ := json.Marshal(ret)
+			io.WriteString(w, string(ret))
 		} else {
-			log.Println("json format error:", err)
+			log.Warn("json format error:", err)
 		}
 
 	} else {
-
-		log.Println("ONly support Post")
-		fmt.Fprintf(w, "Only support post")
+		ret["msg"] = "Must post method"
+		ret["code"] = 500
+		ret, _ := json.Marshal(ret)
+		io.WriteString(w, string(ret))
+		log.Warn("ONly support Post")
 	}
 
-	//go SendMail()
-	io.WriteString(w, "发送邮件\n")
 }
 
 func HttpServ() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/hello", helloHandler)
 	mux.HandleFunc("/", echoHandler)
 	mux.HandleFunc("/sendmail", sendEmailHandler)
 

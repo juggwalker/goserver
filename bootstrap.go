@@ -11,11 +11,6 @@ func main() {
 	log.Out = os.Stdout
 	go FileServ()
 	go HttpServ()
-
-	log.WithFields(logrus.Fields{
-		"file": "success",
-		"http": true,
-	}).Info("server is yet!")
-
+	log.Info("server start.")
 	select {}
 }
