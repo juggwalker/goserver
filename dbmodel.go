@@ -6,69 +6,36 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type DbWorker struct {
-	Dsn         string
-	Db          *sql.DB
-	SettingInfo settingTB
-}
-type settingTB struct {
-	id    int
-	_key  sql.NullString
-	title sql.NullString
-}
+var dbconnection = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s", Config["mysql_user"], Config["mysql_pass"], Config["mysql_host"], Config["mysql_port"], Config["mysql_dbname"], Config["mysql_charset"])
 
-/**
- * 只初始化一个sql.DB对象，并不会立即建立一个数据库的网络连接
- */
-func LoadDB() {
-	var err error
-	dbw := DbWorker{
-		//Dsn: "root:123456@tcp(localhost:3306)/db_name?charset=utf8mb4",
-		Dsn: fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s", Config["mysql_user"], Config["mysql_pass"], Config["mysql_host"], Config["mysql_port"], Config["mysql_dbname"], Config["mysql_charset"]),
+func QuerySetting() {
+
+	db, err := sql.Open("mysql", dbconnection)
+	if err != nil {
+		panic(err)
+		//return
 	}
-	dbw.Db, err = sql.Open("mysql", dbw.Dsn)
+	defer db.Close()
+
+	rows, err := db.Query("SELECT id,_key,title FROM main_setting")
 	if err != nil {
 		panic(err)
 		return
 	}
-	defer dbw.Db.Close()
 
-	dbw.queryData()
-}
-
-func (dbw *DbWorker) queryDataPre() {
-	dbw.SettingInfo = settingTB{}
-}
-func (dbw *DbWorker) queryData() {
-	stmt, _ := dbw.Db.Prepare(`SELECT * From main_setting`)
-	defer stmt.Close()
-
-	dbw.queryDataPre()
-
-	rows, err := stmt.Query()
-	defer rows.Close()
-	if err != nil {
-		fmt.Printf("query data error: %v\n", err)
-		return
-	}
 	for rows.Next() {
-		rows.Scan(&dbw.SettingInfo.id, &dbw.SettingInfo._key, &dbw.SettingInfo.title)
-		if err != nil {
-			fmt.Printf(err.Error())
-			continue
+		var id int
+		var _key string
+		var title string
+		if err := rows.Scan(&id, &_key, &title); err != nil {
+			Log.Warn(err)
 		}
-		/*
-			if !dbw.SettingInfo._key.Valid {
-				dbw.SettingInfo._key.String = ""
-			}
-			if !dbw.SettingInfo.title.Valid {
-				dbw.SettingInfo.title.String = ""
-			}*/
-		fmt.Println("get data, id: ", dbw.SettingInfo.id, " key: ", dbw.SettingInfo._key.String, " title: ", dbw.SettingInfo.title.String)
+		fmt.Printf("%s id is %d onkey %s \n", title, id, _key)
 	}
 
-	err = rows.Err()
-	if err != nil {
-		fmt.Printf(err.Error())
+	if err := rows.Err(); err != nil {
+		Log.Warn(err)
 	}
+	rows.Close()
+
 }

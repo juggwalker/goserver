@@ -20,7 +20,7 @@ func main() {
 	go HttpServ()
 	//go FileServ()
 
-	LoadDB()
+	QuerySetting()
 
 	Log.Info("server start.")
 	select {}
