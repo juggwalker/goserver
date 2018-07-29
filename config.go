@@ -22,6 +22,7 @@ func LoadConfig() map[string]interface{} {
 	ret["mysql_dbname"] = cfg.Section("mysql").Key("dbname").String()
 	ret["mysql_user"] = cfg.Section("mysql").Key("user").String()
 	ret["mysql_pass"] = cfg.Section("mysql").Key("pass").String()
+	ret["mysql_charset"] = cfg.Section("mysql").Key("charset").String()
 
 	return ret
 }
