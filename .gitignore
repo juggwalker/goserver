@@ -6,4 +6,3 @@
 *.test
 *.out
 /vendor
-glide.lock
