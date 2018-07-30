@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:e6ae430ce953d9ed1d7f04dcd122947b8ca038655500c5819ae2e7c25b8b87ff"
+  name = "github.com/astaxie/beego"
+  packages = ["orm"]
+  pruneopts = "UT"
+  revision = "a09bafbf2ab483742b17bb352f95dbc0a597e720"
+  version = "v1.10.0"
+
+[[projects]]
   branch = "master"
   digest = "1:e096ada745e034a059752c202717baee0379b69db9473a90f59d103c973384cf"
   name = "github.com/go-gomail/gomail"
@@ -72,6 +80,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/astaxie/beego/orm",
     "github.com/go-gomail/gomail",
     "github.com/go-ini/ini",
     "github.com/go-sql-driver/mysql",
