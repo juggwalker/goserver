@@ -24,5 +24,5 @@ func main() {
 	getEmailConfig()
 
 	Log.Info("server start.")
-	select {}
+	//select {}
 }
