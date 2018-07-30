@@ -18,10 +18,10 @@ func main() {
 		}
 	}()
 
-	//go HttpServ()
+	go HttpServ()
 	//go FileServ()
 
-	getEmailConfig()
+	//getEmailConfig()
 
 	Log.Info("server start.")
 	//select {}
