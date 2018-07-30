@@ -6,11 +6,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var dbconnection = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s", Config["mysql_user"], Config["mysql_pass"], Config["mysql_host"], Config["mysql_port"], Config["mysql_dbname"], Config["mysql_charset"])
+var dbconnection1 = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s", Config["mysql_user"], Config["mysql_pass"], Config["mysql_host"], Config["mysql_port"], Config["mysql_dbname"], Config["mysql_charset"])
 
 func QuerySetting() {
 
-	db, err := sql.Open("mysql", dbconnection)
+	db, err := sql.Open("mysql", dbconnection1)
 	if err != nil {
 		panic(err)
 		//return

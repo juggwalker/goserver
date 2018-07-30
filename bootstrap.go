@@ -18,14 +18,10 @@ func main() {
 		}
 	}()
 
-	go HttpServ()
+	//go HttpServ()
 	//go FileServ()
 
-	//QuerySetting()
-
-	//ll := (&FileInfo{FileName: "tttt.log"}).WriteWithIo("fsafjlkjfkajfkjkfkd\nfjksadjfklsajf\n22222222222222\n33333333333333333\n")
-	//ll := (&FileInfo{FileName: "tttt.log"}).WriteWithBufio("fsafjlkjfkajfkjkfkd\nfjksadjfklsajf\n22222222222222\n33333333333333333\n")
-	//fmt.Println(ll)
+	getEmailConfig()
 
 	Log.Info("server start.")
 	select {}
