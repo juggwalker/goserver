@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "fmt"
 	"github.com/sirupsen/logrus"
 	"os"
 )
@@ -20,7 +21,11 @@ func main() {
 	go HttpServ()
 	//go FileServ()
 
-	QuerySetting()
+	//QuerySetting()
+
+	//ll := (&FileInfo{FileName: "tttt.log"}).WriteWithIo("fsafjlkjfkajfkjkfkd\nfjksadjfklsajf\n22222222222222\n33333333333333333\n")
+	//ll := (&FileInfo{FileName: "tttt.log"}).WriteWithBufio("fsafjlkjfkajfkjkfkd\nfjksadjfklsajf\n22222222222222\n33333333333333333\n")
+	//fmt.Println(ll)
 
 	Log.Info("server start.")
 	select {}
